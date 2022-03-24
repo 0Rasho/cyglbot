@@ -1,0 +1,9 @@
+six
+requests
+docopt
+bs4
+websocket-client
+PyDictionary
+wikipedia
+socketIO_client_nexus
+giphypop
