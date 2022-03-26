@@ -1,0 +1,434 @@
+body {
+	font: 16px arial, sans-serif;
+	font-style: normal;
+	background-image: url(https://wallpapertag.com/wallpaper/full/2/6/6/119571-free-download-dark-gray-background-2682x1317-laptop.jpg);
+	background-size: 100% 150%;
+	background-position: center;
+	background-attachment: fixed;
+	line-height: 1.2;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.channel-emote {
+	background-color: transparent !important;
+	min-height: 50px;
+	max-height: 200px;
+	max-width: 200px;
+}
+.image-embed-small { background-color: transparent !important; min-height: 50px; max-height: 200px; max-width: 260px;}
+
+#resize-video-larger {
+	padding-top: 3px;
+	color: #d4b196;
+}
+
+#resize-video-smaller {
+	padding-right: 5px;
+	padding-top: 3px;
+	color: #d4b196;
+}
+
+#logout {
+	font: arial, sans-serif;
+	color: #1b5e20;
+	font-size: 15px;
+	!important;
+}
+
+#footer {
+	display: none;
+}
+
+#welcome {
+	font: arial, sans-serif;
+	color: #1b5e20;
+	font-size: 15px;
+	!important;
+}
+
+
+span.server-whisper {
+	display: none;
+}
+
+span.timestamp {
+	display: none;
+}
+
+span.label { display: none }
+
+#userlist {
+	background-none: !important;
+	background-repeat: repeat-x;
+	border-color: #604439;
+	font: arial, sans-serif;
+	color: #d4b196;
+	font-size: 15px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+#userlist .userlist_owner {
+	color: #d4b196!important;
+}
+
+#userlist .userlist_op {
+	color: #d4b196!important;
+}
+
+#userlist .userlist_guest {
+	color: #d4b196!important;
+}
+
+#userlist .userlist_users {
+	color: #d4b196 !important;
+}
+
+textarea.form-control {
+	height: 550px;
+}
+
+#.embed-responsive.embed-responsive-16by9 {
+	width: 100% !important;
+	height: 100%;
+	padding-bottom: 70%;
+}
+
+/*
+#resize-video-larger, #resize-video-smaller {
+	float: right;
+}
+
+#chatwrap, #leftcontrols, #leftpane {
+	float: right;
+}
+*/
+
+#videowrap {
+	padding-right: 2px;
+}
+
+#videowrap-header {
+	border: none;
+}
+
+#currenttitle {
+	background: none;
+	color: #d4b196;
+	font: arial, sans-serif;
+	font-style: bold;
+	text-transform: uppercase;
+	font-size: 16px;
+}
+
+#chatheader {
+	background: transparent;
+	border: none;
+	color: #d4b196;
+	font: arial,sans-serif, cursive;
+	font-size: 12px;
+}
+
+#chatline {
+	background: black;
+	border: none;
+}
+
+#messagebuffer {
+	background: transparent !important;
+	overflow-x: hidden;
+	overflow-y: auto;
+	border-color: #604439;
+}
+
+.nick-highlight {
+	background-color: rgba(255,0,0,0.5) !important;
+	color: white;
+}
+
+#userlisttoggle {
+	margin-left: 7px;
+	margin-right: 7px;
+	margin-top: 0px;
+}
+
+#cs-chanlog-filter {
+	height: 150px !important;
+	margin-bottom: 10px !important;
+}
+
+#motdwrap {
+	#background: transparent;
+	#border: none;
+}
+
+.btn {
+	background: #0d0d0d;
+	#box-shadow: 0px 1px 3px #ffffff;
+	font: arial, sans-serif;
+	color: #604439;
+	font-size: 11px;
+	padding: 10px;
+	border-radius: 15px;
+	text-decoration: none;
+}
+
+#emotelistbtn {
+	background-image: url(https://icons.iconarchive.com/icons/artua/star-wars/48/Death-Star-icon.png)!important;
+	font-size: 0px !important;
+	width: 68px;
+	height: 52px;
+	background-position: 50%;
+	border: none;
+	cursor: pointer;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	z-index: 5;
+}
+
+#emotelistbtn:hover {
+	background-image: url(https://s17.postimg.cc/oemctwkgv/fish.gif)!important;
+}
+
+#getplaylist {
+	background: #000;
+	font: ariel, sans-serif;
+}
+
+#guestlogin > span {
+	border: 1px solid #FF7F50;
+	background: #000;
+	color: #FF7F50;
+	font: arial, sans-serif;
+}
+
+#newpollbtn {
+	background-image: url(https://icons.iconarchive.com/icons/goodstuff-no-nonsense/free-space/72/saturn-icon.png)!important;
+	font-size: 0px;
+	width: 38px;
+	height: 32px;
+	background-position: 50%;
+	cursor: pointer;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	z-index: 5;
+}
+
+.navbar-brand {
+	display: none;
+	background-position: center center!important;
+	width: 90px!important;
+	height: 80px!important;
+	background-repeat: no-repeat;
+	opacity: 1!important;
+	font-size: 0px!important;
+	background-image: url(https://img.icons8.com/color/2x/railroad-crossing-sign.png)!important;
+}
+
+.navbar-fixed-top {
+	opacity: 0;
+	background-image: none !important;
+	background-color: transparent !important;
+	border: none;
+	color: #604439;
+	font: arial, sans-serif;
+	transition: opacity 10s ease-in-out;
+}
+
+.navbar-fixed-top:hover, #footer:hover {
+	opacity: 1;
+	transition: opacity 0.3333s ease;
+}
+
+.navbar, .navbar-inverse .navbar-fixed-top {
+	background-image: none !important;
+	background-color: transparent !important;
+	border: none;
+	font: arial, sans-serif;
+}
+
+.navbar-brand {
+	padding: 5px;
+}
+
+ul.nav > li > a {
+	text-transform: uppercase;
+	font-weight: bold;
+	color: var(--link) !important;
+}
+
+ul.nav > li > a:hover, a:hover {
+	background-image: url("https://32bit.gitlab.io/cytube/glitch2.gif");
+	-webkit-text-fill-color: transparent;
+	-webkit-background-clip: text;
+}
+
+#queue {
+	background-color: transparent;
+	overflow-y: auto;
+}
+
+.queue_entry {
+	color: #63613e;
+	background: transparent;
+	border: none;
+	text-transform: uppercase;
+	font: arial, sans-serif;
+	font-style: bold;
+	font-size: 16px;
+}
+
+.queue_active .qe_title, .queue_active .qe_time {
+	color: #535640 !important;
+}
+
+a {
+	color: #b49d80;
+}
+
+.pm-panel, .pm-panel-placeholder {
+	width: 450px;
+}
+
+.panel-default > .panel-heading {
+	color: #008080;
+	background-color: #2F4F4F;
+}
+
+strong.username {
+	color: #008080;
+}
+
+.chat-msg-Rasho .username {
+	color: #B0C4DE;
+	!important;
+}
+
+.chat-msg-Rasho {
+	color: #FFFF00;
+	!important;
+}
+
+.chat-msg-Rasho .username:before {
+	#content: url(https://img.mfcimg.com/chat_images/e/313.gif) !important;
+}
+
+.chat-msg-Rasho .username:after {
+	#	content: '\A';
+}
+
+.chat-msg-Rasho .timestamp:after {
+	#	content: '\A';
+}
+
+.chat-msg-0__0 {
+	color: #8fccef;
+}
+
+.chat-msg-0__0 .username {
+	color: #8fccef;
+	display: none;
+}
+
+.chat-msg-Melipal .username {
+	color: #FF69B4;
+}
+
+.chat-msg-Melipal {
+	color: #FA8072;
+	!important;
+}
+
+.chat-msg-quadass .username {
+	color: #00d131;
+}
+
+.chat-msg-quadass {
+	color: #ff2b2b;
+	!important;
+}
+
+.chat-msg-BrianWelch .username {
+	color: #427af4;
+}
+
+.chat-msg-BrianWelch {
+	color: #8fccef;
+	!important;
+}
+
+.chat-msg-Leland_Palmer .username {
+	color: #7393B3;
+}
+
+.chat-msg-Leland_Palmer {
+	color: #FF5733;
+	!important;
+}
+
+.chat-msg-Cyrus101 .username {
+	color: #0821F2;
+}
+
+.chat-msg-Cyrus101 {
+	color: #B354ED !important;
+}
+
+.chat-msg-ElonMusk .username {
+	color: #0821F2;
+}
+
+.chat-msg-ElonMusk {
+	color: #B354ED;
+}
+
+.chat-msg-TheFlatCurve .username {
+	color: #f2c649;
+}
+
+.chat-msg-TheFlatCurve {
+	color: #c7a575;
+	!important;
+}
+
+.chat-msg-BonnieBeck {
+  display: none;
+}
+
+/* emote as background */
+.chat-msg-imfuckinidiot {
+	color: #FFCC00;
+	margin-bottom: 10px !important;
+}
+
+.chat-msg-imfuckinidiot .username {
+	color: #FFCC00;
+	visibility: hidden;
+	margin-right: -65px;
+	position: relative;
+}
+
+.chat-msg-imfuckinidiot .username:after {
+	visibility: visible;
+	position: absolute;
+	top: 0;
+	margin-left: -120px;
+	content: " : ";
+	color: #FFCC00;
+	text-indent: 40px;
+	background: url('https://img.mfcimg.com//chat_images/u/15/15c7ccf3.x50.gif');
+	background-position: top;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-size: 25px;
+	width: 60px !important;
+	height: 60px !important;
+}
+
+/* max width or height of emote */
+.channel-emote {
+max-height: 75px!important;
+margin-bottom:5px; }
