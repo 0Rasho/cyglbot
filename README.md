@@ -7,7 +7,7 @@ Simple  cytu.be bot (Core implementation is stolen from CirnoBot by tehnotcpu)
 <li>Registered CyTube account. Few functionality does not work properly without being a moderator.
 
 
-# How To Install required python modules
+# Install required python modules
 
 pip3 install -r requirements.txt
 
@@ -18,14 +18,14 @@ python3 ./cybot.py --name UserName --pass Password  --ec=1
 
 # Usage
 
-Usage: 
-    python3 cybot.py [options]
+Usage:  <br>
+  python3 cybot.py [options] <br>
 
-Options: 
-    --room=ROOM           Room to join 
-    --name=NICK           Bot nickname 
-    --pass=pass           Bot password 
-    --ec=1                enable commands
+Options: <br>
+  --room=ROOM           Room to join  <br>
+  --name=NICK           Bot nickname  <br>
+  --pass=pass           Bot password  <br>
+  --ec=1                enable commands <br>
   
   
 
