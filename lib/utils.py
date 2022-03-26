@@ -45,7 +45,7 @@ def filterchat(msg):
     msg = re.sub("&quot;", "\"", msg)
     msg = re.sub("&#40;", "(", msg)
     msg = re.sub("&#41;", ")", msg)
-    if 'img class="chat-picture"' not in msg:
+    if 'img class="image-embed-small"' not in msg or 'img class="chat-picture"' not in msg:
         msg = re.sub("(<([^>]+)>)", "", msg)
     msg = re.sub("^[ \t]+", "", msg)
     return msg
