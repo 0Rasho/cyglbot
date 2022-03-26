@@ -13,7 +13,7 @@ pip3 install -r requirements.txt
 
 # How To Run
 
-python3 ./cybot.py --name <UserName> --pass <Password>  --ec=1 
+python3 ./cybot.py --name UserName --pass Password  --ec=1
   
 
 # Usage
