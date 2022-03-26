@@ -11,6 +11,7 @@ import requests
 import sys
 import socket
 import urllib
+import os
 
 dictionary=PyDictionary()
 g = giphypop.Giphy()
@@ -361,10 +362,6 @@ class BasicCommands(object):
             if username not in pruser:
                 return
             cirno.kick_spam(0)
-    def _cmd_shutdown(self, cirno, username, args):
-            if username not in pruser:
-                return
-            sys.exit()
 
     def _cmd_e(self, cirno, username, args):
             arg = args.split()
@@ -390,9 +387,22 @@ class BasicCommands(object):
                 cirno.sendmsg('words: %s' % buf)
             else:
                 cirno.sendmsg('%s : %s' % (user, buf))
+
     @checkrank(2)
     def _cmd_vs(self, cirno, username, args):
         cirno.handle_voteskip()
+
+    @checkrank(5)
+    def _cmd_swu(self, cirno, username, args):
+            os.system("git pull");
+            os._exit(0)
+
+    @checkrank(5)
+    def _cmd_shutdown(self, cirno, username, args):
+            if username not in pruser:
+                return
+            os._exit(0)
+
 
 
 def setup():
