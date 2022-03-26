@@ -114,7 +114,6 @@ def Kickanons(cirno):
         anon_kick.start()
 
 def readlog(cirno):
-        return
         global log_update
         log_update = Timer(600, readlog, [cirno])
         cirno.socketIO.emit("readChanLog", {})
