@@ -178,6 +178,6 @@ def parsemedialink(url):
         }
     else:
         return {
-            'id': None,
-            'type': None
+            'id': url,
+            'type': 'raw'
         }
