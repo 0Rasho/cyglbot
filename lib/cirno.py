@@ -95,7 +95,6 @@ class Cirno(BaseNamespace):
         self.db.insertmotd(data)
 
     def on_emoteList (self, data):
-        print(data)
         for i in data:
             self.emotelist[i['name']]=1
         f=open('db/emotes-'+str(config['Server']['channel'])+'.update', 'w')
