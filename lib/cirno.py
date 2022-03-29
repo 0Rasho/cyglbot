@@ -1,6 +1,7 @@
 from socketIO_client_nexus import BaseNamespace
 from lib.database import CirnoDatabase
 import re
+import urllib
 from lib.utils import *
 from lib.commands import *
 from lib.config import config
@@ -48,6 +49,8 @@ class Cirno(BaseNamespace):
         self.settings = {'disallow': []}
         self.channelOpts = {}
         self.userplaylist={}
+        self.emotelist={}
+        self.emupdatef=open('db/emotes-'+str(config['Server']['channel'])+'.mod', 'a+')
         self.rank = 0
         self.trivia_answer = ""
         self.trivia_opt=""
@@ -79,11 +82,30 @@ class Cirno(BaseNamespace):
                 self.cy_print("", username+ " logged in successfully ...")
         else:
                 self.cy_print ("","Failed to login : "+ data['error'])
+
+    def on_removeEmote(self, data):
+        self.emupdatef.write("DEL "+str(data['name'])+" "+str(data['image'])+"\n")
+        del self.emotelist[data['name']]
+
+    def on_updateEmote(self, data):
+        self.emupdatef.write("ADD "+str(data['name'])+" "+str(data['image'])+"\n")
+        self.emotelist[data['name']]=1
+
+    def on_setMotd(self, data):
+        self.db.insertmotd(data)
+
+    def on_emoteList (self, data):
+        print(data)
+        for i in data:
+            self.emotelist[i['name']]=1
+        f=open('db/emotes-'+str(config['Server']['channel'])+'.update', 'w')
+        f.write(str(data))
+        f.close()
+
     def on_usercount (self, data):
         self.total_users = data
 
     def on_chatMsg(self, data):
-        #print data
         timestamp = data['time']
         #print timestamp, datetime.datetime.utcfromtimestamp(timestamp / 1e3)
         username = data['username']
@@ -131,10 +153,9 @@ class Cirno(BaseNamespace):
                 self.userdict[username]['msg'].append(msg)
                 if self.userdict[username]['lmts'] != 0:
                         timediff = timestamp - self.userdict[username]['lmts']
-                #print "... time...", timestamp, self.userdict[username]['lmts']
                 self.userdict[username]['lmts'] = timestamp
         except:
-                return
+                pass
 
         if self.userdict[username]['smuted'] == 1 and 'shadow' not in meta:
                 self.userdict[username]['smuted'] = 0
@@ -145,6 +166,14 @@ class Cirno(BaseNamespace):
             n_w={}
             for e_m in emotes:
                 if e_m.startswith(":") or e_m.startswith("\\") or e_m.startswith("/"):
+                    if e_m.startswith(":"):
+                        try:
+                            is_emote=self.emotelist[e_m]
+                        except KeyError:
+                            try:
+                                self.get_update_mfc_emote_link(e_m)
+                            except:
+                                continue
                     if e_m != "/></a>":
                         self.db.insert_emote(e_m)
                         self.db.insert_uemote(username, e_m)
@@ -173,7 +202,6 @@ class Cirno(BaseNamespace):
                         self.uclear_chat(username, 1)
                         self.userdict[username]['smuted']  = 1
                         self.sendmsg("/kick "+username+ " Pussy, Create your own room and SPAM. See ya!. x _|_ x")
-                        print("\033[31m\033[01m******Cleared "+ username + " ************* \033[0m")
 
         if len(self.userdict[username]['msg']) == 10 and \
            self.userdict[username]['msg'].count(msg) >= 6 and  \
@@ -186,48 +214,12 @@ class Cirno(BaseNamespace):
                         #self.sendmsg("/kick "+username+ " - Kicked for spamming")
                         #self.sendmsg("Kicked "+ username+" for spamming")
                         print("\033[31m\033[01m******Cleared "+ username + " ************* \033[0m")
-                #print "\033[31m\033[01m****** Kicked "+ username + " ************* \033[0m"
 
         if int(timediff) > 30:
                 self.userdict[username]['msg'].clear()
                 if self.userdict[username]['smuted'] == 1 and self.stop_new_chats == 0:
                     self.sendmsg("/unmute "+username)
                     self.uclear_chat(username, 0)
-
-        if config['autobot'] == True and username.lower() in config['autousers']:
-                i = 0
-                if msg == ".?":
-                    msg=nextword("and")
-                smsg = msg.split()
-                s=random.choice(smsg)
-                while True and i < len(smsg):
-                        #print i, smsg[i]
-                        word = nextword(smsg[i])
-                        if word == '.?':
-                                i=i+1
-                                continue
-                        else:
-                                s=word
-                                break
-                response=''
-                i = 0
-                while True:
-                   #s=re.sub('[^A-Za-z:]+', '', s)
-                   response+=' '+s
-                   neword=nextword(s)
-                   s = neword
-                   if neword[-1] in '?.':
-                      break
-                   i = i + 1
-                   if i == 9:
-                        break
-                if neword != "?.":
-                    response+=' '+neword
-                if len(response) >= 1:
-                        #print "GlBot : ", response
-                        self.sendmsg(response)
-                        time.sleep(1)
-
 
     def on_pm(self, data):
         username = data['username']
@@ -245,6 +237,22 @@ class Cirno(BaseNamespace):
         self.pm_cmd=None
         self.pm_cmd_usr=None
         return rval
+
+    def get_update_mfc_emote_link(self,ecode):
+        mfc_url_pcs="https://www.myfreecams.com/mfc2/php/ParseChatStream.php?"
+        name=ecode
+        if name[0] == ':':
+            name=name[1:]
+        e_http=mfc_url_pcs+"a0="+str(name)+"&"+"&"+str(random.random())
+        response=str(urllib.request.urlopen(e_http).read())[4:-3]
+        emote = dict(response.split(':"') for response in response.split(',"'))
+        url=str(emote['url"']).replace('\\','').strip('"')
+        if not "broken.gif" in url:
+            cirno.sendmsg('%s' % (url))
+            mmsg={"name":":"+str(args.strip()),"image":str(url)}
+            cirno.sendraw("updateEmote", mmsg)
+            self.emotelist[ecode]=1
+
     def on_addUser(self, data):
         name = data['name']
         rank = data['rank']
@@ -257,8 +265,6 @@ class Cirno(BaseNamespace):
             pass
         try:
                 alias = data['meta']['aliases']
-                #if "No_Sense" or "OjsGlove" or "KzarqsWife" or "TrueLove101" in alias or name in [ "No_Sense", "OjsGlove", "KzarqsWife", "TrueLove101", "no_sense"  ]:
-                #    self.sendmsg("/kick "+name+" _|_   _|_ ")
         except:
                 alias = None
 
@@ -286,6 +292,7 @@ class Cirno(BaseNamespace):
         if ip != None:
             self.db.insertuserip(name, ip)
         self.db.insertuserrank(name, rank)
+
     def on_channelOpts(self, data):
         self.channelOpts = data
 
@@ -455,7 +462,6 @@ class Cirno(BaseNamespace):
                         self.cy_print("", buf)
                 except:
                         pass
-        #print self.userplaylist
 
     def on_changeMedia(self, data):
         self.current_vid=data['id']
@@ -474,7 +480,6 @@ class Cirno(BaseNamespace):
                 f=open('db/css-'+str(config['Server']['channel'])+'.update', 'w')
                 f.write(self.css)
                 f.close()
-                #sys.exit()
             else:
                 self.css_updated=0
 

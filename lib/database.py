@@ -35,6 +35,8 @@ class CirnoDatabase(object):
                        " PRIMARY KEY(emote))")
         self.c.execute("CREATE TABLE IF NOT EXISTS uwords(username TEXT, word TEXT, count INTEGER,"
                        " PRIMARY KEY(word))")
+        self.c.execute("CREATE TABLE IF NOT EXISTS motd(motd TEXT,"
+                       " PRIMARY KEY(motd))")
         self.updatetables()
 
         self.updatetables()
@@ -84,6 +86,10 @@ class CirnoDatabase(object):
     def insertuserrank(self, username, rank):
         self.c.execute("UPDATE users SET rank = ? WHERE uname = ?",
                        (rank, username))
+        self.conn.commit()
+
+    def insertmotd(self,  motd):
+        self.c.execute("INSERT OR REPLACE INTO motd VALUES(?)", (motd, ))
         self.conn.commit()
 
     def getuserrank(self, username):
