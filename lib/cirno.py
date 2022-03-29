@@ -247,9 +247,9 @@ class Cirno(BaseNamespace):
         emote = dict(response.split(':"') for response in response.split(',"'))
         url=str(emote['url"']).replace('\\','').strip('"')
         if not "broken.gif" in url:
-            self.sendmsg(':%s %s :check' % (str(name.strip()), url))
             mmsg={"name":":"+str(name.strip()),"image":str(url)}
             self.sendraw("updateEmote", mmsg)
+            self.sendmsg(':%s :check' % (str(name.strip())))
             self.emotelist[ecode]=1
 
     def on_addUser(self, data):
