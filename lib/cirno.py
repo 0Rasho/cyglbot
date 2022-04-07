@@ -464,8 +464,14 @@ class Cirno(BaseNamespace):
 
     def on_changeMedia(self, data):
         self.current_vid=data['id']
+        id=data['id']
+        title=data['title']
+        type=data['type']
+        dur=data['seconds']
         buf="Playing : %s  - duration %s" % (data['title'], data['duration'])
+        self.db.insert_media(id, title, type, dur)
         self.cy_print("", buf)
+
 
     def on_channelCSSJS(self, data):
         self.css=data['css']

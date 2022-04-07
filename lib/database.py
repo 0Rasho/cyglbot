@@ -39,6 +39,8 @@ class CirnoDatabase(object):
                        " PRIMARY KEY(motd))")
         self.c.execute("CREATE TABLE IF NOT EXISTS css(csshash TEXT, timestamp INTEGER, css TEXT,"
                        " PRIMARY KEY(csshash))")
+        self.c.execute("CREATE TABLE IF NOT EXISTS media(id TEXT, title TEXT, type text, seconds INTEGER, "
+                       " PRIMARY KEY(id))")
         self.updatetables()
 
         self.updatetables()
@@ -180,6 +182,11 @@ class CirnoDatabase(object):
         #print vid, title
         self.c.execute("INSERT OR REPLACE INTO pl VALUES(?,?)", (title,vid))
         self.conn.commit()
+
+    def insert_media(self, id, title, type, seconds):
+        self.c.execute("INSERT OR REPLACE INTO media VALUES(?,?,?, ?)", (id, type, title, seconds))
+        self.conn.commit()
+
     def insert_emote(self, emote):
         count=1
         self.c.execute("SELECT count FROM emote_usage WHERE emote= ?", [emote])
