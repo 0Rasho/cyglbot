@@ -468,19 +468,9 @@ class Cirno(BaseNamespace):
         self.cy_print("", buf)
 
     def on_channelCSSJS(self, data):
-        f=open('db/css', 'r')
-        buf=f.read()
-        f.close()
         self.css=data['css']
-        if data['css'] == buf:
-            print ("CSS has not changed")
-        else:
-            if self.css_updated == 0:
-                f=open('db/css-'+str(config['Server']['channel'])+'.update', 'w')
-                f.write(self.css)
-                f.close()
-            else:
-                self.css_updated=0
+        timestamp = int(time.time() * 1000)
+        self.db.insertcss(data['cssHash'], timestamp, self.css)
 
     def on_setCurrent(self, data):
         self.current_vid=data

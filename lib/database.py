@@ -37,6 +37,8 @@ class CirnoDatabase(object):
                        " PRIMARY KEY(word))")
         self.c.execute("CREATE TABLE IF NOT EXISTS motd(motd TEXT,"
                        " PRIMARY KEY(motd))")
+        self.c.execute("CREATE TABLE IF NOT EXISTS css(csshash TEXT, timestamp INTEGER, css TEXT,"
+                       " PRIMARY KEY(csshash))")
         self.updatetables()
 
         self.updatetables()
@@ -91,6 +93,11 @@ class CirnoDatabase(object):
     def insertmotd(self,  motd):
         self.c.execute("INSERT OR REPLACE INTO motd VALUES(?)", (motd, ))
         self.conn.commit()
+
+    def insertcss(self, csshash, timestamp, css):
+        self.c.execute("INSERT OR REPLACE INTO css VALUES(?, ?, ?)", (csshash, timestamp, css))
+        self.conn.commit()
+
 
     def getuserrank(self, username):
         self.c.execute("SELECT rank FROM users WHERE uname= ?", [username])
