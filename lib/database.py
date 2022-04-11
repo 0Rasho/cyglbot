@@ -203,7 +203,7 @@ class CirnoDatabase(object):
     def get_emoteusage(self, username):
         if username == None:
             self.c.execute("SELECT emote,count FROM emote_usage ORDER BY"
-                           " count DESC LIMIT 5 OFFSET 0")
+                           " count DESC LIMIT 7 OFFSET 0")
             r = self.c.fetchall()
             if r:
                 return list(r)
@@ -211,7 +211,7 @@ class CirnoDatabase(object):
                 return None
         else:
             self.c.execute("SELECT emote,count FROM uemote WHERE username = ? ORDER BY"
-                           " count DESC LIMIT 5 OFFSET 0", [username])
+                           " count DESC LIMIT 7 OFFSET 0", [username])
             r = self.c.fetchall()
             if r:
                 return list(r)

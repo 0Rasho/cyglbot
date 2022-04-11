@@ -388,6 +388,24 @@ class BasicCommands(object):
             else:
                 cirno.sendmsg('%s : %s' % (user, buf))
 
+    def _cmd_eu(self, cirno, username, args):
+            if len(args):
+                user=args
+            else:
+                user=None
+            a=cirno.db.get_emoteusage(user)
+            buf=""
+            if a == None:
+                return
+            else:
+                for i in a:
+                    buf+=str(i[0])+" = "+str(i[1])+ " "
+            print(buf)
+            if user == None:
+                cirno.sendmsg('emotes: %s' % buf)
+            else:
+                cirno.sendmsg('%s : %s' % (user, buf))
+
     @checkrank(2)
     def _cmd_vs(self, cirno, username, args):
         cirno.handle_voteskip()
