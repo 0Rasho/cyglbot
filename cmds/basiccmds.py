@@ -404,7 +404,6 @@ class BasicCommands(object):
                     break;
             cirno.sendmsg('%s : %s:%s' % (username, args, str(buf)))
 
-    @checkrank(2)
     def _cmd_ml(self, cirno, username, args):
             a=cirno.db.mediadb.get_media(str(args))
             if a == None:
