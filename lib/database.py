@@ -1,5 +1,20 @@
 import sqlite3
 
+class MediaCirnoDatabase(object):
+    def __init__(self):
+        self.conn = sqlite3.connect('db/media-cirnodb.db', timeout=60)
+        self.c = self.conn.cursor()
+        self.createtables()
+
+    def createtables(self):
+        self.c.execute("CREATE TABLE IF NOT EXISTS media(id TEXT, type TEXT, title text, seconds INTEGER, "
+                       " PRIMARY KEY(id, type))")
+
+    def insert_media(self, id, title, type, seconds):
+        self.c.execute("INSERT OR REPLACE INTO media VALUES(?,?,?, ?)", (id, type, title, seconds))
+        self.conn.commit()
+
+
 class IPCirnoDatabase(object):
     def __init__(self):
         self.conn = sqlite3.connect('db/ip-cirnodb.db', timeout=60)
@@ -25,6 +40,7 @@ class IPCirnoDatabase(object):
             username=username+buf
             self.c.execute("INSERT OR REPLACE INTO ip2user VALUES (?, ?)",
                            (ipstr, username))
+        self.conn.commit()
     def insertuserip2(self, ipstr, username):
         if username is None:
             return
@@ -37,16 +53,15 @@ class IPCirnoDatabase(object):
             ipstr=ipstr+buf
             self.c.execute("INSERT OR REPLACE INTO user2ip VALUES (?, ?)",
                            (username, ipstr))
+        self.conn.commit()
 
     def get_u2ip(self, username):
             self.c.execute("SELECT ipaddr FROM user2ip WHERE name = ?", [username])
             r = self.c.fetchone()
-            print(r)
             if r:
                 return r[0]
             else:
                 return None
-
 
 class CirnoDatabase(object):
     def __init__(self, name):
@@ -54,6 +69,7 @@ class CirnoDatabase(object):
         self.c = self.conn.cursor()
         self.createtables()
         self.ipdb=IPCirnoDatabase();
+        self.mediadb=MediaCirnoDatabase();
 
     def createtables(self):
         self.c.execute("CREATE TABLE IF NOT EXISTS users(uname TEXT, rank INTEGER,"
@@ -231,12 +247,12 @@ class CirnoDatabase(object):
         m=msg.split(']', 1)[1]
         self.c.execute("INSERT OR REPLACE INTO chatlog VALUES(?,?)", (time,m,))
     def insert_playlist(self, vid, title):
-        #print vid, title
         self.c.execute("INSERT OR REPLACE INTO pl VALUES(?,?)", (title,vid))
         self.conn.commit()
 
     def insert_media(self, id, title, type, seconds):
         self.c.execute("INSERT OR REPLACE INTO media VALUES(?,?,?, ?)", (id, type, title, seconds))
+        self.mediadb.insert_media(id, title, type,seconds)
         self.conn.commit()
 
     def insert_emote(self, emote):
