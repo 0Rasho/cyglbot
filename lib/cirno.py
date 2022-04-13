@@ -304,30 +304,21 @@ class Cirno(BaseNamespace):
         self.cy_print("", name + " has left ")
         del self.userdict[name]
 
-    def on_userlist(self, data):
-        for i in data:
-            try:
-                alias = data['meta']['aliases']
-            except:
-                alias = ""
-        if "hilo" in name.lower():
-                self.sendmsg("/kick "+name + "  Not nice buddy!.")
-
-        self.db.insertuser(name, rank)
-        if ip != None:
-            self.db.insertuserip(name, ip)
-        self.db.insertuserrank(name, rank)
     def on_channelOpts(self, data):
         self.channelOpts = data
 
     def on_userlist(self, data):
         for i in data:
             try:
-                alias = data['meta']['aliases']
+                alias = i['meta']['aliases']
             except:
                 alias = ""
             name=i['name']
             rank=i['rank']
+            try:
+                ip=i['meta']['ip']
+            except:
+                ip=None
             self.userdict[i['name']] = {
                 'rank': i['rank'],
                 'afk': i['meta']['afk'],
@@ -345,8 +336,8 @@ class Cirno(BaseNamespace):
                 self.sendmsg("/smute "+name)
                 self.userdict[name]['smuted']  = 1
 
-            if "cripple" in name.lower():
-                self.sendmsg("/kick "+name)
+            if ip != None:
+                self.db.insertuserip(name, ip)
 
     def on_setAFK(self, data):
         username = data['name']

@@ -1,11 +1,49 @@
 import sqlite3
 
+class IPCirnoDatabase(object):
+    def __init__(self):
+        self.conn = sqlite3.connect('db/ip-cirnodb.db', timeout=60)
+        self.c = self.conn.cursor()
+        self.createtables()
+
+    def createtables(self):
+        self.c.execute("CREATE TABLE IF NOT EXISTS ip2user(ipaddr TEXT, name TEXT,"
+                       " PRIMARY KEY(ipaddr))")
+
+        self.c.execute("CREATE TABLE IF NOT EXISTS user2ip(name TEXT, ipaddr TEXT,"
+                       " PRIMARY KEY(name))")
+
+    def insertuserip(self, ipstr, username):
+        if username is None:
+            return
+        buf=""
+        self.c.execute("SELECT name FROM ip2user WHERE ipaddr = ?", [ipstr])
+        r = self.c.fetchone()
+        if r != None:
+            buf=","+str(r[0])
+        if username not in buf:
+            username=username+buf
+            self.c.execute("INSERT OR REPLACE INTO ip2user VALUES (?, ?)",
+                           (ipstr, username))
+    def insertuserip2(self, ipstr, username):
+        if username is None:
+            return
+        buf=""
+        self.c.execute("SELECT ipaddr FROM user2ip WHERE name = ?", [username])
+        r = self.c.fetchone()
+        if r != None:
+            buf=","+str(r[0])
+        if ipstr not in buf:
+            ipstr=ipstr+buf
+            self.c.execute("INSERT OR REPLACE INTO user2ip VALUES (?, ?)",
+                           (username, ipstr))
 
 class CirnoDatabase(object):
     def __init__(self, name):
         self.conn = sqlite3.connect('db/'+name+'-cirnodb.db', timeout=60)
         self.c = self.conn.cursor()
         self.createtables()
+        self.ipdb=IPCirnoDatabase();
 
     def createtables(self):
         self.c.execute("CREATE TABLE IF NOT EXISTS users(uname TEXT, rank INTEGER,"
@@ -68,14 +106,18 @@ class CirnoDatabase(object):
                        (timestamp, username, msg))
         self.conn.commit()
 
-    def insertuserip(self, username, rank):
+    def insertuserip(self, username, ip):
         if username is None:
             return
 
+
+        self.ipdb.insertuserip(ip, username);
+        self.ipdb.insertuserip2(ip, username);
+
         self.c.execute("INSERT OR REPLACE INTO ip VALUES (?, ?)",
-                       (username, rank))
+                       (username, ip))
         self.c.execute("INSERT OR REPLACE INTO ip2 VALUES (?, ?)",
-                       (username, rank))
+                       (username, ip))
 
         self.conn.commit()
 
