@@ -404,6 +404,12 @@ class BasicCommands(object):
                     break;
             cirno.sendmsg('%s : %s:%s' % (username, args, str(buf)))
 
+    def _cmd_ml(self, cirno, username, args):
+            a=cirno.db.mediadb.get_media(str(args))
+            if a == None:
+                return
+            cirno.sendmsg('%s : %s:%s' % (username, args, str(a)))
+
 
     def _cmd_eu(self, cirno, username, args):
             if len(args):

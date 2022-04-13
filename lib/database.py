@@ -14,6 +14,14 @@ class MediaCirnoDatabase(object):
         self.c.execute("INSERT OR REPLACE INTO media VALUES(?,?,?, ?)", (id, type, title, seconds))
         self.conn.commit()
 
+#https://docs.google.com/file/d/1d1hgkMjDGN4HwcBQw7Zz6MYjnf-c0vi0/edit
+    def get_media(self, name):
+        self.c.execute('SELECT * FROM media WHERE title LIKE ?', ['%'+name+'%'])
+        r= self.c.fetchall()
+        buf=""
+        for i in r:
+            buf+=i[1]+" "
+        return buf
 
 class IPCirnoDatabase(object):
     def __init__(self):
