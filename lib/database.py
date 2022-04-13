@@ -20,7 +20,7 @@ class MediaCirnoDatabase(object):
         r= self.c.fetchall()
         buf=""
         for i in r:
-            buf+=i[1]+" "
+            buf+=i[2]+" "
         return buf
 
 class IPCirnoDatabase(object):
