@@ -512,6 +512,7 @@ class Cirno(BaseNamespace):
             except:
                     self.userplaylist[uid]= emitmsg
             self.db.insert_playlist(str(ty)+"/"+str(v_id), title)
+            self.db.insert_media(str(v_id), title, str(ty), secs)
         return
         for arg in args:
             for media in arg:
@@ -559,7 +560,6 @@ class Cirno(BaseNamespace):
             self.emit("queue", json)
             if play == 1:
                 self.play_this_video=link['id']
-            if config['Server']['login'].lower() == 'aspen':
                 timestamp = int(time.time() * 1000)
                 self.db.insertchat(timestamp, "MEDIA", str(link['type'])+".com/"+str(link['id']))
         else:
