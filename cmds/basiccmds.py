@@ -388,6 +388,23 @@ class BasicCommands(object):
             else:
                 cirno.sendmsg('%s : %s' % (user, buf))
 
+    def _cmd_ui(self, cirno, username, args):
+            a=cirno.db.ipdb.get_u2ip(args)
+            if a == None:
+                return
+            buf=""
+            a=a.split(',')
+            le=len(a)
+            j=0
+            while le:
+                le = le - 1
+                buf+=a[le]+" "
+                j=j+1
+                if j == 5:
+                    break;
+            cirno.sendmsg('%s : %s:%s' % (username, args, str(buf)))
+
+
     def _cmd_eu(self, cirno, username, args):
             if len(args):
                 user=args

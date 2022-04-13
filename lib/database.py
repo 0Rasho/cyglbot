@@ -38,6 +38,16 @@ class IPCirnoDatabase(object):
             self.c.execute("INSERT OR REPLACE INTO user2ip VALUES (?, ?)",
                            (username, ipstr))
 
+    def get_u2ip(self, username):
+            self.c.execute("SELECT ipaddr FROM user2ip WHERE name = ?", [username])
+            r = self.c.fetchone()
+            print(r)
+            if r:
+                return r[0]
+            else:
+                return None
+
+
 class CirnoDatabase(object):
     def __init__(self, name):
         self.conn = sqlite3.connect('db/'+name+'-cirnodb.db', timeout=60)
@@ -259,6 +269,7 @@ class CirnoDatabase(object):
                 return list(r)
             else:
                 return None
+
     def get_wusage(self, username):
         if username == None:
             self.c.execute("SELECT word,count FROM uwords ORDER BY"
