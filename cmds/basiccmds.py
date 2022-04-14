@@ -408,7 +408,7 @@ class BasicCommands(object):
             a=cirno.db.mediadb.get_media(str(args))
             if a == None:
                 return
-            self.pm_cmd_usr=username
+            cirno.pm_cmd_usr=username
             cirno.sendmsg('%s' % (str(a)))
 
     def _cmd_eu(self, cirno, username, args):
