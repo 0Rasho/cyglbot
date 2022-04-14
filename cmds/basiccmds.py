@@ -21,7 +21,8 @@ import lib.socks as socks
 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9099)
 
 
-pruser= [ 'TomHardy', 'Cyrus101', 'ElonMusk', 'Rasho', 'quadass', 'imfuckinidiot', 'TheFlatCurve' ]
+pruser= [ ]
+
 def get_gif_list(last_offset, key, limit):
     params = {'q': (key)}
     params['api_key'] = "dc6zaTOxFJmzC"
@@ -43,59 +44,6 @@ def get_gif_list(last_offset, key, limit):
             pass
         i=i+1
     return glist
-
-b = [
-              "TomHardy: get on with your life, clearly you have a lot to offer a real woman",
-              "TomHardy: zuni is just an actress, and she'll back that up,,,,,,",
-              "TomHardy: YOU ARE WASTING YOUR LIFE HERE",
-              "TomHardy: I'm a good cuckstomer :wheelchair",
-              "TomHardy: heres a tip for goodbye horses :gramps",
-              "TomHardy:  I love your bush  :gramps", 
-              "TomHardy: my rewards points reflect my self esteem :gramps",
-              "TomHardy: i knew it, zuni on cytube is not zunny on mfc just a catfisher pretending to be her :yes",
-              "TomHardy: I'm zuni's biggest cuckstomer :gramps",
-              "TomHardy: I was shopping for gun parts :wheelchair",
-              "TomHardy: I'm the only one that have a JOB in here :gramps",
-              "TheFlatEarth : Tom is a pimp. He teaches boys about whores etc",
-              "TomHardy : i Get REALLY MAD WHEN MODELS BAN ME but then i think :g that fucking whore will end up in potter's field and im happy again",
-              "TomHardy : zuni, does your car work? become an uber driver deliver groceries to old peeps",
-              "TomHardy : zuni is so fat now she cant walk, she just waddles",
-              "TomHardy : im into bush on hot chicks idc if they have boobs. boobs are a bonus tho",
-              "TomHardy : hey kevin, take a cricket bat, wrap it in barbed wire, and SHOVE IT UP YOUR ASS",
-              "TomHardy : how humiliating would it be to be the BEST female athlete in the world and get beat by a man in a dress",
-              "TomHardy : what she(nq) thinks, and what is true, are 2 different things altogether",
-              "TomHardy : why does anyone think i give a shit about zunny/?",
-              "TomHardy : i already told you i work in a steel mill and pizz is a hacker/iranian terrorist",
-              "TomHardy : she must be regretting choosing Tango the manchild over a real man like :mme",
-              "TomHardy : melipal and audio will spend eternity with each other in the chinese hell of being boiled alive",
-              "TomHardy : my feet hurt after 13 hours shift, i cant walk anymore",
-              "TomHardy : i was never taught to survive",
-              "TomHardy : did you ever consider THEY created the meme stocks to keep day traders busy",
-              "TomHardy : i wake up everyday, mad that i woke up",
-              "TomHardy : kiwi's are fucking bonkers",
-              "TomHardy : cyrus101 how many creek sluts did you impregnate yesterday?",
-              "TomHardy : no way audio is a real person, which one of you is playing the part of audio?",
-              "TomHardy : i was so drunk yesterday i dont remember what i watched",
-              "TomHardy : that supersock , he went in Sophie and told her Dale said she needed a boob job, and a bush",
-              "TomHardy : the bitch never even gave me a chance to defend my self. she just believed her regs that told her i got her dangerously  drunk",
-              "TomHardy : i prefer the skinny white chicks",
-              "TomHardy: i watch vintage porn from the 70's"
-            ]
-
-p= [
-        "PityTip : i want more liq but everyone took my booze",
-        "PityTip : rudy im sorry for any negativity. im sorr fotwhat i did",
-        "PityTip : you fuckers talking bad bout tommy ,grr",
-        "PityTip : tommy is a G :grr talking bad about tommy for shame",
-        "PityTip : i luv u all :hug im sorry for being a cunt. PumpysAnus : Cuntytip :hug",
-        "PityTip : i wont get shit ill have to scrounge around. i know the truth",
-        "PityTip : none of you mother fuckers could hang with my life",
-        "PityTip : none of you niggaz could deal with what i deal with",
-        "PityTip : tommy got me drunk and left. thats why whores turn on him. cause he gets them fucked up then bails. i know he did that to me",
-        "PityTip : most people would kill themselvels of they lived my lifel"
-        ]
-c=b
-d=p
 
 class BasicCommands(object):
     @throttle(300)
@@ -121,17 +69,6 @@ class BasicCommands(object):
         else:
             cirno.sendmsg('%s: Choose at least two options.' % username)
 
-    def _cmd_b(self, cirno, username, args):
-            global c
-            global b
-            try:
-                k= c.pop(random.randint(0, len(c)-1))
-                cirno.sendmsg('%s' % (k))
-            except:
-                c=b.shuffle()
-                k= c.pop(random.randint(0, len(c)-1))
-                cirno.sendmsg('%s' % (k))
-
     def _cmd_k(self, cirno, username, args):
         try:
                 #rank = int(cirno.userdict[username]['rank'])
@@ -153,13 +90,6 @@ class BasicCommands(object):
             cirno.sendmsg('%s: %s' % (username, setrand))
         else:
             cirno.sendmsg('%s: %s' % (username, randoften))
-
-    def _cmd_ask(self, cirno, username, args):
-        if not args:
-            cirno.sendmsg('%s: Enter your search terms!' % username)
-        else:
-            answers = ["none"]
-            cirno.sendmsg('%s: %s' % (username, choice(answers)))
 
     def _cmd_rate(self, cirno, username, args):
         name = args.split()[0]
@@ -208,7 +138,6 @@ class BasicCommands(object):
     def _cmd_g5(self, cirno, username, args):
         if args:
             self.send_gif(cirno, username, args, 5)
-
 
     def _cmd_g6(self, cirno, username, args):
         if args:
@@ -259,25 +188,18 @@ class BasicCommands(object):
             cirno.sendmsg('%s: %s = %s' % (username, src, res))
 
     def _cmd_m(self, cirno, username, args):
-        mfc_url_pcs="https://www.myfreecams.com/mfc2/php/ParseChatStream.php?"
         if not args:
-            cirno.sendmsg('%s: Enter your search!' % username)
             return
-        import random
+        mfc_url_pcs="https://www.myfreecams.com/mfc2/php/ParseChatStream.php?"
         if args[0] == ':':
             args=args[1:]
         e_http=mfc_url_pcs+"a0="+str(args)+"&"+"&"+str(random.random())
-        #oldsock=socket.socket
-        #socket.socket = socks.socksocket
-        response=str(urllib.request.urlopen(e_http).read())
-        #socket.socket=oldsock
-        response=response[4:-3]
+        response=str(urllib.request.urlopen(e_http).read())[4:-3]
         emote = dict(response.split(':"') for response in response.split(',"'))
-        url=str(emote['url"'])
-        url=url.replace('\\','').strip('"')
+        url=str(emote['url"']).replace('\\','').strip('"')
         cirno.sendmsg('%s: %s' % (username, url))
         if not "broken.gif" in url:
-            mmsg={"name":":"+str(args.strip()),"image":str(url)}
+            mmsg={"name":":"+str(emote['"txt"'].strip('"')),"image":str(url)}
             cirno.sendraw("updateEmote", mmsg)
 
     def _cmd_d(self, cirno, username, args):
@@ -300,6 +222,7 @@ class BasicCommands(object):
             for user in cirno.userdict.keys():
                 if user.lower() == args.lower():
                         cirno.sendmsg('%s => %s' % (args, ",".join(str(x) for x in cirno.userdict[user]['alias'])))
+
     def _cmd_wk(self, cirno, username, args):
         if not args:
             cirno.sendmsg('%s: Enter your search!' % username)
