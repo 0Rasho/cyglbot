@@ -173,11 +173,10 @@ class Cirno(BaseNamespace):
                                 self.get_update_mfc_emote_link(e_m)
                             except:
                                 continue
-                    if e_m != "/></a>":
                         self.db.insert_emote(e_m)
                         self.db.insert_uemote(username, e_m)
                 else:
-                    if len(e_m) > 3:
+                    if len(e_m) > 2:
                         self.db.insert_uword(username, e_m)
                 try:
                     n_w[e_m] += 1
