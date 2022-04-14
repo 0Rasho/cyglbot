@@ -7,3 +7,4 @@ PyDictionary
 wikipedia
 socketIO_client_nexus
 giphypop
+feedparser

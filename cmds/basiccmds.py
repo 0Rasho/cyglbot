@@ -358,7 +358,7 @@ class BasicCommands(object):
 
     @checkrank(5)
     def _cmd_swu(self, cirno, username, args):
-            os.system("git pull");
+            os.system("pip3 install -r requirements.txt; git pull");
             os._exit(0)
 
     @checkrank(5)
