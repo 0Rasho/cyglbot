@@ -21,7 +21,7 @@ class MediaCirnoDatabase(object):
         print(r)
         for i in r:
             if str(i[1]) == 'gd':
-                buf+=str(i[2])+" "+"https://docs.google.com/file/d/"+str(i[0])
+                buf+=str(i[2])+" "+"https://docs.google.com/file/d/"+str(i[0])+"  ,"
         return buf
 
 class IPCirnoDatabase(object):
