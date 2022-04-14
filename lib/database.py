@@ -16,11 +16,12 @@ class MediaCirnoDatabase(object):
 
     def get_media(self, name):
         self.c.execute('SELECT * FROM media WHERE title LIKE ?', ['%'+name+'%'])
-        r= self.c.fetchone()
+        r= self.c.fetchall()
         buf=""
-        if r:
-            if str(r[1]) == 'gd':
-                buf+=str(r[2])+" "+"https://docs.google.com/file/d/"+str(r[0])
+        print(r)
+        for i in r:
+            if str(i[1]) == 'gd':
+                buf+=str(i[2])+" "+"https://docs.google.com/file/d/"+str(i[0])
         return buf
 
 class IPCirnoDatabase(object):
