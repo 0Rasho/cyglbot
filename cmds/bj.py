@@ -195,41 +195,43 @@ class BlackJACK2():
             if self.next_player:
                 cirno.sendmsg(self.next_player+" => Hit '!bj h' or Stand '!bj s'?")
             else:
+                #last user busted no more next player, its dealer turn
+                self.do_dealer_hand(cirno)
                 self.bj_in_progress=0
         else:
             cirno.sendmsg(username+" => Hit '!bj h' or Stand '!bj s'?")
 
+    def do_dealer_hand(self, cirno):
+       while self.total(self.dealer_hand) < 17:
+           self.hit(self.dealer_hand)
+           buf=""
+           for k in self.dealer_hand:
+               buf+=":"+str(k)+" "
+           dtotal=self.total(self.dealer_hand)
+           cirno.sendmsg("Dealer : "+buf+" = "+str(dtotal))
+           if self.total(self.dealer_hand) > 21:
+               cirno.sendmsg("Dealer busts!")
+               for plyr in self.players:
+                   pbuf=""
+                   player_hand = plyr.hand
+                   for k in player_hand:
+                       pbuf+=":"+str(k)+" "
+                   ptotal=self.total(player_hand)
+                   cirno.sendmsg(plyr+" : "+pbuf+" = "+str(ptotal))
+                   cirno.sendmsg(plyr+" wins!")
+               self.bj_in_progress=0
+               return
+       self.score(cirno)
+
     def player_stand(self, cirno, username):
          plyr = self.getplayer(username)
          if plyr == None:
-             print("invalid username")
              return
-         print(self.next_player, username)
          self.getnextplayer(username)
-         print(self.next_player, username)
          if self.next_player and self.next_player != username:
              cirno.sendmsg(self.next_player+": Hit '!bj h' or Stand '!bj s'?")
              return
-         while self.total(self.dealer_hand) < 17:
-             self.hit(self.dealer_hand)
-             buf=""
-             for k in self.dealer_hand:
-                 buf+=":"+str(k)+" "
-             dtotal=self.total(self.dealer_hand)
-             cirno.sendmsg("Dealer : "+buf+" = "+str(dtotal))
-             if self.total(self.dealer_hand) > 21:
-                 cirno.sendmsg("Dealer busts!")
-                 for plyr in self.players:
-                     pbuf=""
-                     player_hand = plyr.hand
-                     for k in player_hand:
-                         pbuf+=":"+str(k)+" "
-                     ptotal=self.total(player_hand)
-                     cirno.sendmsg(plyr+" : "+pbuf+" = "+str(ptotal))
-                     cirno.sendmsg(plyr+" wins!")
-                 self.bj_in_progress=0
-                 return
-         self.score(cirno)
+         self.do_dealer_hand(cirno)
 
     def playgame(self, cirno, username, choice):
         if self.bj_in_progress == 0:
