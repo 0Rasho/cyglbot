@@ -55,7 +55,9 @@ class Cirno(BaseNamespace):
         self.trivia_answer = ""
         self.trivia_opt=""
         self.wordscramble_answer = ""
+        self.is_bj_running = 0
         self.wordscramble = ""
+        self.bjplayers=[]
         loadplugins()
         updatesettings(self)
         self.allowed_sources = config['Misc']['allowed_sources']

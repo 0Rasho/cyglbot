@@ -253,7 +253,7 @@ class BlackJACK(object):
                 cirno.sendmsg (username+" => Dealer is in love with you")
             #bj_in_progress=0
 
-    def _cmd_bj(self, cirno, username, args):
+    def _cmd_bjsingle(self, cirno, username, args):
         global deck
         global bj_in_progress
         global player_hand
