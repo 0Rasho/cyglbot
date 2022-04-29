@@ -321,8 +321,6 @@ def start():
     cirno.motd = MOTD()
     cirno.motd_itr = 0
     #userio.start()
-    motd_update = Timer(60, update_motd, [cirno])
-    motd_update.start()
     if UserName != None and Password != None:
         if Channel == "101":
              log_update = Timer(60, readlog, [cirno])
