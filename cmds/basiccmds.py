@@ -12,6 +12,7 @@ import sys
 import socket
 import urllib
 import os
+import json
 
 dictionary=PyDictionary()
 g = giphypop.Giphy()
@@ -21,11 +22,12 @@ import lib.socks as socks
 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9099)
 
 
-pruser= [ ]
+pruser= []
 
 def get_gif_list(last_offset, key, limit):
+    return None
     params = {'q': (key)}
-    params['api_key'] = "dc6zaTOxFJmzC"
+    params['api_key'] = ""
     params['limit'] = limit
     params['offset'] = last_offset
     resp = requests.get("http://api.giphy.com/v1/gifs/search", params=params)
@@ -56,6 +58,21 @@ class BasicCommands(object):
         usd=r['bpi']['USD']['rate']
         eur=r['bpi']['EUR']['rate']
         cirno.sendmsg('%s: %s = %s USD  %s EUR' % (username, name, usd, eur))
+
+    @throttle(15)
+    def _cmd_g(self, cirno, username, args):
+        if args:
+            code = b'TElWRFNSWlVMRUxB'
+            lmt = 16
+            search_term = str(args)
+            r = requests.get(
+                "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search_term, code.decode('utf-8'), lmt))
+            if r.status_code == 200:
+                top_8gifs = json.loads(r.content)
+                results = top_8gifs["results"]
+                ngifs = len(results)
+                url=results[random.randint(0, ngifs)]["media"][0]["mediumgif"]["url"]
+                cirno.sendmsg('%s' % (url))
 
     def _cmd_uptime(self, cirno, username, args):
         uptime = time() - cirno.cirnostart
@@ -160,7 +177,7 @@ class BasicCommands(object):
         if args:
             self.send_gif(cirno, username, args, 10)
 
-    def _cmd_g(self, cirno, username, args):
+    def _cmd_gdisable(self, cirno, username, args):
         if not args:
             cirno.sendmsg('%s: Enter your search!' % username)
         else:
