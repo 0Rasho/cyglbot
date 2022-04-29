@@ -19,6 +19,7 @@ Options:
 
 from lib.cirno import Cirno
 from lib.config import config
+from lib.motd import *
 import socket
 import lib.socks
 import datetime
@@ -56,7 +57,7 @@ def cy_disconnect():
          log_update.cancel()
     except:
           pass
-    sys.exit()
+    os._exit(0)
 
 def cy_error(self, data):
     print ("[socket.io error] ")
@@ -65,7 +66,7 @@ def cy_error(self, data):
          log_update.cancel()
     except:
           pass
-    sys.exit()
+    os._exit(0)
 
 class Connections(object):
     def __init__(self):
@@ -118,6 +119,17 @@ def readlog(cirno):
         log_update = Timer(600, readlog, [cirno])
         cirno.socketIO.emit("readChanLog", {})
         log_update.start()
+
+def update_motd(cirno):
+        global motd_update
+        if cirno.motd_itr == 0 or cirno.motd_itr == 6:
+            cirno.motd.get_updated_news()
+            cirno.motd_itr = 1
+        motd = cirno.motd.get_motd()
+        motd_update = Timer(600, update_motd, [cirno])
+        cirno.socketIO.emit("setMotd", { "motd": str(motd) })
+        motd_update.start()
+        cirno.motd_itr += 1
 
 def input_thread ():
         global cirno
@@ -294,51 +306,11 @@ def handle_signal(signum, frame):
             log_update.cancel()
         except:
             pass
-        sys.exit()
-def build_chat():
-        if maxfiles == 0:
-                return
-        i = 0
-        filedir="SRT"
-        mime = magic.Magic(mime=True)
-        follow={}
-        for root, dirs, filenames in os.walk(filedir):
-            for f in filenames:
-                if f == "robots.txt" or f == "cano.txt":
-                        continue
-                path = os.path.join(root, f)
-                if mime.from_file(path) == 'text/plain' or path.endswith('.txt'):
-                        i = i + 1
-                        b=open(path)
-                        text=[]
-                        for line in b:
-                            for word in line.split():
-                                text.append (word)
-                        b.close()
-                        textset=list(set(text))
-                        for l in range(len(textset)):
-                            check=textset[l]
-                            try:
-                                    a = follow[check]
-                            except:
-                                     follow[check]=[]
-
-                            for w in range(len(text)-1):
-                                if check==text[w] and text[w][-1] not in '(),.?!':
-                                    word = str(text[w+1])
-                                    if word not in follow[check]:
-                                            follow[check].append(word)
-                if i == maxfiles:
-                    break
-            if i == maxfiles:
-                break
-        a=open(config['AIdatafile'],'wb')
-        pickle.dump(follow,a,2)
-        a.close()
-
+        os._exit(0)
 
 def start():
     global log_update
+    global motd_update
     global cirno
     #global userio
     signal.signal(signal.SIGINT, handle_signal)
@@ -346,11 +318,17 @@ def start():
     #userio.setDaemon(True)
     cirno = Connections()
     cirno.gui = None
+    cirno.motd = MOTD()
+    cirno.motd_itr = 0
     #userio.start()
+    motd_update = Timer(60, update_motd, [cirno])
+    motd_update.start()
     if UserName != None and Password != None:
         if Channel == "101":
              log_update = Timer(60, readlog, [cirno])
              log_update.start()
+             motd_update = Timer(60, update_motd, [cirno])
+             motd_update.start()
     cirno.cirnoconnect()
 
 if __name__ == '__main__':
