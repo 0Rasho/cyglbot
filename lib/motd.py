@@ -58,6 +58,7 @@ class RSS():
         self.news = []
         for rss in self.rssobjs:
             j = 0
+            random.shuffle(rss.news)
             for i in rss.news:
                 il = i.lower()
                 if "how" in il: 
