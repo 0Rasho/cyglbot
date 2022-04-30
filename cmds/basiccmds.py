@@ -216,7 +216,7 @@ class BasicCommands(object):
         url=str(emote['url"']).replace('\\','').strip('"')
         cirno.sendmsg('%s: %s' % (username, url))
         if not "broken.gif" in url:
-            mmsg={"name":":"+str(emote['"txt"'].strip('"')),"image":str(url)}
+            mmsg={"name":+str(emote['"txt"'].strip('"')),"image":str(url)}
             cirno.sendraw("updateEmote", mmsg)
 
     def _cmd_d(self, cirno, username, args):
