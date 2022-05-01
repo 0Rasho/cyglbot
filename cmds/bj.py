@@ -2,10 +2,6 @@ import os
 import random
 from random import choice, randint, uniform
 
-class Dump():
-    def sendmsg(self, buf):
-        print(buf)
-
 class BJPlayer():
     def __init__(self, name):
         self.name = name
@@ -22,10 +18,30 @@ class BlackJACK2():
         self.dealer_hand = []
         self.next_player = self.players[0].name
         self.is_deal_done = False
+        self.gif_list = []
+        self.get_gif_list()
+        random.shuffle(self.gif_list)
+        random.shuffle(self.gif_list)
 
     def deal(self):
         card = self.deck.pop()
         return card
+
+    def send_gif(self, cirno, username):
+        k = self.gif_list.pop()
+        if k:
+            random.shuffle(self.gif_list)
+            cirno.sendmsg('%s: %s' % (username, k))
+            return
+
+    def get_gif_list(self):
+        file1 = open('db/cache', 'r')
+        file1.seek(0, os.SEEK_SET)
+        for quote in file1:
+            quote=quote.strip('\n')
+            quote=quote.strip()
+            self.gif_list.append(quote)
+        file1.close()
 
     def total(self, hand):
         total = 0
@@ -53,39 +69,56 @@ class BlackJACK2():
         if self.total(player_hand) == 21:
             cirno.sendmsg (plyr.name+" got a Blackjack! "+pbuf)
             plyr.is_player_out = True
+            self.send_gif(cirno, plyr.name)
+
+    def whowon(self, cirno):
+       for plyr in self.players:
+           pbuf=""
+           player_hand = plyr.hand
+           for k in player_hand:
+               pbuf+=":"+str(k)+" "
+           ptotal=self.total(player_hand)
+           if ptotal <= 21:
+               cirno.sendmsg(plyr.name+" : "+pbuf+" = "+str(ptotal))
+               cirno.sendmsg(plyr.name+" wins!")
+               self.send_gif(cirno, plyr.name)
 
     def score(self, cirno):
             dbuf=""
             for k in self.dealer_hand:
                 dbuf+=":"+str(k)+" "
-
             dtotal = self.total(self.dealer_hand)
-            cirno.sendmsg("Dealer : "+dbuf+" = "+str(dtotal))
-            pbuf=""
-            for plyr in self.players: 
-                username = plyr.name
-                player_hand = plyr.hand
-                for k in player_hand:
-                    pbuf+=":"+str(k)+" "
-                ptotal = self.total(player_hand)
-                cirno.sendmsg(username+" : "+pbuf+ " = "+str(ptotal))
 
-                if self.total(player_hand) == 21:
-                    cirno.sendmsg (username+" got a Blackjack!")
-                elif self.total(self.dealer_hand) == 21:
-                    cirno.sendmsg ("Dealer got a blackjack.")
-                elif self.total(player_hand) > 21:
-                    cirno.sendmsg (username+" => You busted.")
-                elif self.total(self.dealer_hand) > 21:
-                    cirno.sendmsg ("Dealer busts. "+username+" win!")
-                elif self.total(player_hand) < self.total(self.dealer_hand):
-                    cirno.sendmsg (username+" score isn't higher than the Dealer. "+ username+" lost.")
-                elif self.total(player_hand) > self.total(self.dealer_hand):
-                    cirno.sendmsg (username+" score is higher than the Dealer "+username+" win")
-                elif self.total(player_hand) == self.total(self.dealer_hand):
-                    cirno.sendmsg (username+" => Dealer is in love with you")
-            #undo bprogress
-                self.bj_in_progress=0
+            cirno.sendmsg("Dealer : "+dbuf+" = "+str(dtotal))
+            if dtotal == 21:
+                cirno.sendmsg ("Dealer got a blackjack.")
+            elif dtotal > 21:
+                cirno.sendmsg ("Dealer busts.")
+                self.whowon(cirno)
+            else:
+                pbuf=""
+                for plyr in self.players: 
+                    username = plyr.name
+                    player_hand = plyr.hand
+                    for k in player_hand:
+                        pbuf+=":"+str(k)+" "
+                    ptotal = self.total(player_hand)
+                    cirno.sendmsg(username+" : "+pbuf+ " = "+str(ptotal))
+
+                    if self.total(player_hand) == 21:
+                        cirno.sendmsg (username+" got a Blackjack!")
+                        self.send_gif(cirno, username)
+                    elif self.total(player_hand) > 21:
+                        cirno.sendmsg (username+" => You busted.")
+                    elif self.total(player_hand) < dtotal:
+                        cirno.sendmsg (username+" score isn't higher than the Dealer. "+ username+" lost.")
+                    elif self.total(player_hand) > dtotal:
+                        cirno.sendmsg (username+" score is higher than the Dealer "+username+" win")
+                        self.send_gif(cirno, username)
+                    elif self.total(player_hand) == dtotal:
+                        cirno.sendmsg (username+" => Dealer is in love with you")
+                #undo bprogress
+            self.bj_in_progress=0
 
     def get_deck(self):
         random.seed()
@@ -169,15 +202,20 @@ class BlackJACK2():
         if self.bj_in_progress == 1:
             cirno.sendmsg(self.next_player+": Hit '!bj h' or Stand '!bj s'?")
 
+    def dealer_deal(self, cirno):
+        for plyr in self.players:
+            if plyr.is_player_out == True:
+                continue
+            self.do_dealer_hand(cirno)
+        self.bj_in_progress=0
+
     def player_hit(self, cirno, username):
         plyr = self.getplayer(username)
         if plyr == None:
-            print("invalid username")
             return
         player_hand = plyr.hand
         self.hit(player_hand)
         buf=""
-        print(username, player_hand)
         for k in player_hand:
             buf+=":"+str(k)+" "
 
@@ -185,9 +223,12 @@ class BlackJACK2():
         cirno.sendmsg(username+" : "+buf+" = "+str(ptotal))
         if self.total(player_hand) == 21:
             self.deal_blackjack(cirno, plyr)
+            plyr.is_player_out = True
             self.getnextplayer(username)
-            if self.bj_in_progress == 1:
+            if self.next_player:
                 cirno.sendmsg(self.next_player+" => Hit '!bj h' or Stand '!bj s'?")
+            else:
+                self.dealer_deal(cirno)
         elif self.total(player_hand) > 21:
             cirno.sendmsg(username+' busted')
             plyr.is_player_out = True
@@ -195,9 +236,7 @@ class BlackJACK2():
             if self.next_player:
                 cirno.sendmsg(self.next_player+" => Hit '!bj h' or Stand '!bj s'?")
             else:
-                #last user busted no more next player, its dealer turn
-                self.do_dealer_hand(cirno)
-                self.bj_in_progress=0
+                self.dealer_deal(cirno)
         else:
             cirno.sendmsg(username+" => Hit '!bj h' or Stand '!bj s'?")
 
@@ -208,17 +247,10 @@ class BlackJACK2():
            for k in self.dealer_hand:
                buf+=":"+str(k)+" "
            dtotal=self.total(self.dealer_hand)
-           cirno.sendmsg("Dealer : "+buf+" = "+str(dtotal))
            if self.total(self.dealer_hand) > 21:
+               cirno.sendmsg("Dealer : "+buf+" = "+str(dtotal))
                cirno.sendmsg("Dealer busts!")
-               for plyr in self.players:
-                   pbuf=""
-                   player_hand = plyr.hand
-                   for k in player_hand:
-                       pbuf+=":"+str(k)+" "
-                   ptotal=self.total(player_hand)
-                   cirno.sendmsg(plyr+" : "+pbuf+" = "+str(ptotal))
-                   cirno.sendmsg(plyr+" wins!")
+               self.whowon(cirno)
                self.bj_in_progress=0
                return
        self.score(cirno)
@@ -235,7 +267,6 @@ class BlackJACK2():
 
     def playgame(self, cirno, username, choice):
         if self.bj_in_progress == 0:
-            print("bj not in progress")
             return
         if self.next_player != username:
             cirno.sendmsg(username+" - :nono not your turn")
@@ -256,15 +287,18 @@ class BJ(object):
             cirno.bjplayers.append(username)
     def _cmd_bj(self, cirno, username, args):
         if len(cirno.bjplayers) == 0:
-            cirno.sendmsg("Place your bets!: !bet and !bj to start game")
-        else:
+            cirno.bjplayers.append(username)
+            cirno.sendmsg("For multi-player: !bet and !bj to start game")
+        if not args:
+            if cirno.is_bj_running == True:
+                cirno.sendmsg(username+" - Game-is-in-Progress: calm down babyboy :ebkissie ")
+                return
+            cirno.bjgame = BlackJACK2(cirno.bjplayers)
+            cirno.bjgame.deal_cards(cirno, username)
             cirno.is_bj_running = True
-            if not args:
-                cirno.bjgame = BlackJACK2(cirno.bjplayers)
-                cirno.bjgame.deal_cards(cirno, username)
-            else:
-                choice=list(args)[0]
-                cirno.bjgame.playgame(cirno, username, choice)
+        else:
+            choice=list(args)[0]
+            cirno.bjgame.playgame(cirno, username, choice)
                 
 def setup():
     random.seed()

@@ -40,6 +40,8 @@ import random
 import urllib
 from bs4 import BeautifulSoup
 import sys
+import base64
+import json
 
 #reload(sys)
 #sys.setdefaultencoding('utf8')
@@ -119,6 +121,36 @@ def readlog(cirno):
         log_update = Timer(600, readlog, [cirno])
         cirno.socketIO.emit("readChanLog", {})
         log_update.start()
+
+def gifs_update():
+    code = b'TElWRFNSWlVMRUxB'
+    gcache = open('db/cache', 'r')
+    gcache.seek(0, os.SEEK_SET)
+    gifs=[]
+    for link in gcache:
+        link=link.strip('\n')
+        link=link.strip()
+        gifs.append(link)
+    gcache.close()
+    gcache = open('db/cache', 'a')
+    while True:
+        lmt = 64
+        search = [ b'Ym9vYnM=', b'dGl0cw==', b'c2V4eSBnaXJscw==', b'YmlraW5p', b'Z2lybHMga2lzc2luZw==', b'bGVzYmlhbg==' ]
+        for search_term in search:
+            search_term = base64.b64decode(search_term).decode('utf-8')
+            r = requests.get(
+                "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search_term, code.decode('utf-8'), lmt))
+            if r.status_code == 200:
+                top_8gifs = json.loads(r.content)
+                results = top_8gifs["results"]
+                for res in results:
+                    url=res["media"][0]["mediumgif"]["url"]
+                    if url not in gifs:
+                        gifs.append(url)
+                        gcache.write(url)
+                        gcache.write("\n")
+            time.sleep(300)
+        time.sleep(7200)
 
 def update_motd(cirno):
         global motd_update
@@ -316,11 +348,14 @@ def start():
     signal.signal(signal.SIGINT, handle_signal)
     #userio = threading.Thread(target=input_thread)
     #userio.setDaemon(True)
+    #userio.start()
     cirno = Connections()
     cirno.gui = None
     cirno.motd = MOTD()
     cirno.motd_itr = 0
-    #userio.start()
+    tgif = threading.Thread(target=gifs_update)
+    tgif.setDaemon(True)
+    tgif.start()
     if UserName != None and Password != None:
         if Channel == "101":
              log_update = Timer(60, readlog, [cirno])

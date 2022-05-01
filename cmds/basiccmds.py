@@ -148,49 +148,6 @@ class BasicCommands(object):
         if args:
             self.send_gif(cirno, username, args, 2)
 
-    def _cmd_g4(self, cirno, username, args):
-        if args:
-            self.send_gif(cirno, username, args, 4)
-
-    def _cmd_g5(self, cirno, username, args):
-        if args:
-            self.send_gif(cirno, username, args, 5)
-
-    def _cmd_g6(self, cirno, username, args):
-        if args:
-            self.send_gif(cirno, username, args, 6)
-
-    def _cmd_g7(self, cirno, username, args):
-        if args:
-            self.send_gif(cirno, username, args, 7)
-
-    def _cmd_g8(self, cirno, username, args):
-        if args:
-            self.send_gif(cirno, username, args, 8)
-
-    def _cmd_g9(self, cirno, username, args):
-        if args:
-            self.send_gif(cirno, username, args, 9)
-
-
-    def _cmd_g10(self, cirno, username, args):
-        if args:
-            self.send_gif(cirno, username, args, 10)
-
-    def _cmd_gdisable(self, cirno, username, args):
-        if not args:
-            cirno.sendmsg('%s: Enter your search!' % username)
-        else:
-            offset=0
-            #offset=choice([0,25,50,75,100,125])
-            #limit=random.choice([25,50,75,100])
-            limit=50
-            results=get_gif_list(offset,"\""+args+"\"", limit)
-            if len(results)==0:
-                results=get_gif_list(0,"\""+args+"\"", 25)
-            url=choice(results)
-            cirno.sendmsg('%s: %s' % (username, url))
-
     def _cmd_c(self, cirno, username, args):
         if not args:
             return
