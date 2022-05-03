@@ -176,6 +176,25 @@ def parsemedialink(url):
             'id': url,
             'type': 'sc'
         }
+    elif 'odysee.com' in url:
+        m=re.search(r'(https?://)?(odysee.com)/@(\w+)[:](\w)/(\w.+)[:](\w)', url)
+        if m:
+            return {
+                'id': m[3]+";"+m[5],
+                'type': 'od'
+            }
+        else:
+            m=re.search(r'(https?://)?(odysee.com)/@(\w+)/(\w.+)', url)
+            if m:
+                return {
+                    'id': m[3]+";"+m[4],
+                    'type': 'od'
+                }
+            else:
+                return {
+                    'id': url,
+                    'type': 'raw'
+                }
     else:
         return {
             'id': url,
