@@ -12,9 +12,7 @@ Options:
     --room=ROOM           Room to join 
     --name=NICK           Bot nickname 
     --pass=pass           Bot password 
-    --files=pass           Bot password 
     --ec=1                 enable commands
-    --ab=1                 enable auto bot
 """
 
 from lib.cirno import Cirno
@@ -22,23 +20,16 @@ from lib.config import config
 from lib.motd import *
 import socket
 import lib.socks
-import datetime
 #socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9099)
 #socket.socket = socks.socksocket
 from socketIO_client_nexus import SocketIO
 import requests
 from threading import Timer
 import signal
-import sys
 import threading
 import os
 import time
-import pickle
 from docopt import docopt
-import random
-import urllib
-from bs4 import BeautifulSoup
-import sys
 import base64
 import json
 
@@ -166,7 +157,6 @@ def start():
     cirno.cirnoconnect()
 
 if __name__ == '__main__':
-    global successorlist
     signal.signal(signal.SIGINT, handle_signal)
     args = docopt(__doc__, version='0.1')
     abot = 0

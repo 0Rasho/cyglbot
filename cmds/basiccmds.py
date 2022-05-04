@@ -3,7 +3,6 @@ from datetime import timedelta
 from random import choice, randint, uniform
 import random
 from lib.utils import checkrank
-import giphypop
 from lib.utils import throttle
 from PyDictionary import PyDictionary
 import wikipedia
@@ -15,14 +14,10 @@ import os
 import json
 
 dictionary=PyDictionary()
-g = giphypop.Giphy()
-offset=0
 
 import lib.socks as socks
 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9099)
 
-
-pruser= []
 
 def get_gif_list(last_offset, key, limit):
     return None
@@ -59,21 +54,6 @@ class BasicCommands(object):
         eur=r['bpi']['EUR']['rate']
         cirno.sendmsg('%s: %s = %s USD  %s EUR' % (username, name, usd, eur))
 
-    @throttle(15)
-    def _cmd_g(self, cirno, username, args):
-        if args:
-            code = b'TElWRFNSWlVMRUxB'
-            lmt = 16
-            search_term = str(args)
-            r = requests.get(
-                "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search_term, code.decode('utf-8'), lmt))
-            if r.status_code == 200:
-                top_8gifs = json.loads(r.content)
-                results = top_8gifs["results"]
-                ngifs = len(results)
-                url=results[random.randint(0, ngifs)]["media"][0]["mediumgif"]["url"]
-                cirno.sendmsg('%s' % (url))
-
     def _cmd_uptime(self, cirno, username, args):
         uptime = time() - cirno.cirnostart
         uptime = '%s' % (timedelta(seconds=round(uptime)))
@@ -86,20 +66,6 @@ class BasicCommands(object):
         else:
             cirno.sendmsg('%s: Choose at least two options.' % username)
 
-    def _cmd_k(self, cirno, username, args):
-        try:
-                #rank = int(cirno.userdict[username]['rank'])
-                #if rank >= 2:
-                '''
-                if args:
-                    msg1={"msg": "/kick "+str(args)+" "+str(username)+"  kicked you! :( ", "meta": {}}
-                else:
-                    msg1={"msg": "/kickanons", "meta": {}}
-                '''
-                msg1={"msg": "/kickanons", "meta": {}}
-                cirno.sendraw("chatMsg", msg1)
-        except:
-                pass
     def _cmd_roll(self, cirno, username, args):
         randoften = randint(0, 10)
         if args and args.isdigit():
@@ -125,28 +91,58 @@ class BasicCommands(object):
                         cirno.sendmsg('%s => %s' % (args, ",".join(str(x) for x in cirno.userdict[user]['alias'])))
 
     def send_gif(self, cirno, username, args, count):
-            offset=choice([0,25,50])
-            #limit=random.choice([25,50,75,100])
-            limit=100
-            results=get_gif_list(offset,"\""+args+"\"", limit)
-            if len(results)==0:
-                results=get_gif_list(0,"\""+args+"\"", 25)
-            i=0
-            while i < count:
-                url=results[(random.randrange(0, len(results)-1))]
-                i=i+1
+        code = b'TElWRFNSWlVMRUxB'
+        lmt = 16
+        search_term = str(args)
+        r = requests.get(
+            "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (search_term, code.decode('utf-8'), lmt))
+        if r.status_code == 200:
+            top_8gifs = json.loads(r.content)
+            results = top_8gifs["results"]
+            ngifs = len(results)
+            if count > ngifs:
+                count = ngifs
+            random.shuffle(results)
+            random.shuffle(results)
+            for i in results:
+                url=i["media"][0]["mediumgif"]["url"]
                 user=cirno.pm_cmd_usr
                 cirno.sendmsg('%s' % (url))
                 cirno.pm_cmd_usr=user
+                count = count - 1
+                if count == 0:
+                    break
             cirno.pm_cmd_usr = None
 
+    @throttle(10)
+    def _cmd_g6(self, cirno, username, args):
+        if args:
+            self.send_gif(cirno, username, args, 6)
+
+    @throttle(10)
+    def _cmd_g5(self, cirno, username, args):
+        if args:
+            self.send_gif(cirno, username, args, 5)
+
+    @throttle(10)
+    def _cmd_g4(self, cirno, username, args):
+        if args:
+            self.send_gif(cirno, username, args, 4)
+
+    @throttle(10)
     def _cmd_g3(self, cirno, username, args):
         if args:
             self.send_gif(cirno, username, args, 3)
 
+    @throttle(10)
     def _cmd_g2(self, cirno, username, args):
         if args:
             self.send_gif(cirno, username, args, 2)
+
+    @throttle(10)
+    def _cmd_g(self, cirno, username, args):
+        if args:
+            self.send_gif(cirno, username, args, 1)
 
     def _cmd_c(self, cirno, username, args):
         if not args:
@@ -186,7 +182,6 @@ class BasicCommands(object):
                 cirno.sendmsg('%s: (%s) -> %s' % (args, i, ','.join(map(str, a[i]))))
         elif len(a) > 1:
             for i in a:
-                #cirno.sendmsg('%s: (%s) -> %s' % (args, i, ','.join(map(str, a[i]))))
                 cirno.sendmsg('%s: (%s) -> %s' % (args, i, a[i][0]))
 
     def _cmd_w(self, cirno, username, args):
@@ -216,49 +211,42 @@ class BasicCommands(object):
                 cirno.pm_cmd_usr=user
         cirno.pm_cmd_usr = None
 
+
+    @checkrank(3)
     def _cmd_cls(self, cirno, username, args):
-            if username not in pruser:
-                return
-            name=str(args).replace(" ", '')
-            cirno.uclear_chat(name, 1)
+        name=str(args).replace(" ", '')
+        cirno.uclear_chat(name, 1)
 
+    @checkrank(3)
     def _cmd_ucls(self, cirno, username, args):
-            if username not in pruser:
-                return
-            name=str(args).replace(" ", '')
-            cirno.uclear_chat(name, 0)
+        name=str(args).replace(" ", '')
+        cirno.uclear_chat(name, 0)
 
+    @checkrank(4)
     def _cmd_spam(self, cirno, username, args):
-            if username not in pruser:
-                return
-            name=str(args).replace(" ", '')
-            cirno.control_spam(name, 1)
+        name=str(args).replace(" ", '')
+        cirno.control_spam(name, 1)
 
+    @checkrank(4)
     def _cmd_nspam(self, cirno, username, args):
-            if username not in pruser:
-                return
-            name=str(args).replace(" ", '')
-            cirno.control_spam(name, 0)
+        name=str(args).replace(" ", '')
+        cirno.control_spam(name, 0)
 
+    @checkrank(4)
     def _cmd_ff(self, cirno, username, args):
-            if username not in pruser:
-                return
-            cirno.tab_spam(1)
+        cirno.tab_spam(1)
 
+    @checkrank(4)
     def _cmd_nff(self, cirno, username, args):
-            if username not in pruser:
-                return
-            cirno.tab_spam(0)
+        cirno.tab_spam(0)
 
+    @checkrank(4)
     def _cmd_fo(self, cirno, username, args):
-            if username not in pruser:
-                return
-            cirno.kick_spam(1)
+        cirno.kick_spam(1)
 
+    @checkrank(4)
     def _cmd_nfo(self, cirno, username, args):
-            if username not in pruser:
-                return
-            cirno.kick_spam(0)
+        cirno.kick_spam(0)
 
     def _cmd_e(self, cirno, username, args):
             arg = args.split()
@@ -337,8 +325,6 @@ class BasicCommands(object):
 
     @checkrank(5)
     def _cmd_shutdown(self, cirno, username, args):
-            if username not in pruser:
-                return
             os._exit(0)
 
 
