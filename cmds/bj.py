@@ -96,8 +96,8 @@ class BlackJACK2():
                 cirno.sendmsg ("Dealer busts.")
                 self.whowon(cirno)
             else:
-                pbuf=""
                 for plyr in self.players: 
+                    pbuf=""
                     username = plyr.name
                     player_hand = plyr.hand
                     for k in player_hand:
