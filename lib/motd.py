@@ -1,5 +1,6 @@
 import feedparser
 import random
+import requests
 
 class Feed():
     def __init__(self, title, link):
@@ -102,9 +103,23 @@ class MOTD():
     def get_updated_news(self):
         self.robj.rss_fetch()
 
+    def getbtc(self):
+        bitcoin_api_url = 'https://api.coindesk.com/v1/bpi/currentprice.json'
+        response = requests.get(bitcoin_api_url)
+        r = response.json()
+        name=r['chartName']
+        usd=r['bpi']['USD']['rate']
+        eur=r['bpi']['EUR']['rate']
+        return '%s $%s €%s' % (name, usd, eur)
+
     def get_motd(self):
         self.robj.rss_populate()
         motd = self.motd_start + self.font
+        try:
+            btc = self.getbtc()
+            motd += self.breakgif + btc
+        except:
+            pass
         for i in self.robj.news:
             motd += self.breakgif + "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\""
             motd +=i.link+"\">"+i.title+"</a>"
