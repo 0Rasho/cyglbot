@@ -296,9 +296,15 @@ class BJ(object):
             cirno.bjgame = BlackJACK2(cirno.bjplayers)
             cirno.bjgame.deal_cards(cirno, username)
             cirno.is_bj_running = True
+            if cirno.bjgame.bj_in_progress == 0:
+                cirno.is_bj_running = False
         else:
             choice=list(args)[0]
-            cirno.bjgame.playgame(cirno, username, choice)
+            if choice == 'r':
+                cirno.bjplayers = []
+                cirno.is_bj_running = False
+            else:
+                cirno.bjgame.playgame(cirno, username, choice)
                 
 def setup():
     random.seed()
