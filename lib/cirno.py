@@ -207,10 +207,10 @@ class Cirno(BaseNamespace):
            self.userdict[username]['msg'].count(msg) >= 6 and  \
            self.name.lower() != username.lower():
                 if self.userdict[username]['smuted'] == 0:
-                        self.sendmsg("/kickanons")
-                        self.sendmsg("/smute "+username)
-                        self.uclear_chat(username, 1)
-                        self.userdict[username]['smuted']  = 1
+                        #self.sendmsg("/kickanons")
+                        #self.sendmsg("/smute "+username)
+                        #self.uclear_chat(username, 1)
+                        #self.userdict[username]['smuted']  = 1
                         #self.sendmsg("/kick "+username+ " - Kicked for spamming")
                         #self.sendmsg("Kicked "+ username+" for spamming")
                         print("\033[31m\033[01m******Cleared "+ username + " ************* \033[0m")
